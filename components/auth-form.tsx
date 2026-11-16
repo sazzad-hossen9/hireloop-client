@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -16,6 +17,15 @@ const TABS: Array<{ mode: AuthMode; label: string; href: string }> = [
   { mode: "signup", label: "Sign Up", href: "/sign-up" },
 ]
 
+// Values must match the `role` additional field in lib/auth.ts
+const ROLES = [
+  { value: "seeker", label: "Job Seeker" },
+  { value: "recruiter", label: "Recruiter" },
+  { value: "admin", label: "Admin" },
+] as const
+
+type Role = (typeof ROLES)[number]["value"]
+
 /**
  * Shared auth form for the Sign In / Sign Up pages.
  * The tab row toggles between the two pages (URL-based), and the submit
@@ -23,26 +33,45 @@ const TABS: Array<{ mode: AuthMode; label: string; href: string }> = [
  */
 export function AuthForm({ mode }: { mode: AuthMode }) {
   const isSignIn = mode === "signin"
+  const router = useRouter()
+  const [pending, setPending] = React.useState(false)
+  const [error, setError] = React.useState<string | null>(null)
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     const data = Object.fromEntries(new FormData(event.currentTarget))
-    console.log("sdfghjk",data)
-    if (isSignIn) {
-      const { data: fromData, error } = await authClient.signIn.email({
-        email: data.email as string,
-        password: data.password as string,
-        callbackURL: "/",
-      })
-      console.log("sign in page ", fromData, error)
-    } else {
-      const { data: signUpData, error } = await authClient.signUp.email({
-        name: data.fullName as string,
-        email: data.email as string,
-        password: data.password as string,
-        callbackURL: "/",
-      })
-      console.log("sign uo data ", signUpData, error)
+
+    setError(null)
+    setPending(true)
+
+    try {
+      if (isSignIn) {
+        const { error } = await authClient.signIn.email({
+          email: data.email as string,
+          password: data.password as string,
+          callbackURL: "/",
+        })
+        if (error) {
+          setError(error.message ?? "Unable to sign in. Please try again.")
+          return
+        }
+        router.push("/")
+      } else {
+        const { error } = await authClient.signUp.email({
+          name: data.fullName as string,
+          email: data.email as string,
+          password: data.password as string,
+          role: data.role as Role,
+          callbackURL: "/",
+        })
+        if (error) {
+          setError(error.message ?? "Unable to create account. Please try again.")
+          return
+        }
+        router.push("/")
+      }
+    } finally {
+      setPending(false)
     }
   }
 
@@ -137,11 +166,51 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
           )}
         </div>
 
+        {!isSignIn && (
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="role">I am a</Label>
+            <div className="grid grid-cols-3 gap-2">
+              {ROLES.map((role, index) => (
+                <label
+                  key={role.value}
+                  className="relative flex h-11 cursor-pointer items-center justify-center rounded-lg border border-input bg-[#0c0c0f] px-2 text-center text-sm text-foreground transition-colors has-checked:border-ring has-checked:bg-primary/15 has-checked:text-foreground"
+                >
+                  <input
+                    type="radio"
+                    id={index === 0 ? "role" : undefined}
+                    name="role"
+                    value={role.value}
+                    defaultChecked={index === 0}
+                    className="sr-only"
+                  />
+                  {role.label}
+                </label>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {error && (
+          <p
+            role="alert"
+            className="rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive"
+          >
+            {error}
+          </p>
+        )}
+
         <Button
           type="submit"
+          disabled={pending}
           className="mt-2 h-11 w-full rounded-lg text-[15px]"
         >
-          {isSignIn ? "Sign In" : "Create Account"}
+          {pending
+            ? isSignIn
+              ? "Signing in…"
+              : "Creating account…"
+            : isSignIn
+              ? "Sign In"
+              : "Create Account"}
         </Button>
       </form>
 
