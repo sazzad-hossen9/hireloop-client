@@ -10,12 +10,6 @@ import { cn } from "@/lib/utils"
 import { authClient, useSession } from "@/lib/auth-client"
 import { signOut } from "better-auth/api"
 
-const NAV_LINKS = [
-  { label: "Browse Jobs", href: "#browse-jobs", active: true },
-  { label: "Company", href: "#company", active: false },
-  { label: "Pricing", href: "#pricing", active: false },
-]
-
 /**
  * Site navbar following the HireLoop Figma design:
  * - Desktop: dark header bar (#141418, r14) with the logo on the left and a
@@ -28,7 +22,17 @@ const NAV_LINKS = [
 export function SiteHeader() {
   const [open, setOpen] = React.useState(false)
   const { data: session } = useSession()
-  console.log("user ", session)
+  const NAV_LINKS = [
+    { label: "Browse Jobs", href: "#browse-jobs", active: true },
+    { label: "Company", href: "#company", active: false },
+    { label: "Pricing", href: "#pricing", active: false },
+    {
+      label: "Dashboard",
+      href: `/dashboard/${session?.user?.role || "seeker"}`,
+      active: false,
+    },
+  ]
+
   const handleSignOut = async () => {
     await authClient.signOut()
   }
