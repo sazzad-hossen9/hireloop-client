@@ -17,6 +17,8 @@ import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { cn } from "@/lib/utils"
+import { createJobs } from "@/lib/actions/jobs"
+import { toast } from "@/components/ui/toast"
 
 const JOB_TYPES = [
   { value: "full-time", label: "Full-time" },
@@ -74,7 +76,7 @@ export function NewJobForm() {
     string
   > | null>(null)
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
     // One line to read every named input into a plain object.
@@ -85,13 +87,14 @@ export function NewJobForm() {
     // TODO: send `data` to your API / MongoDB when the backend is ready.
     console.log("[new job] form data:", data)
     setCollected(data)
-    fetch("", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
+    const result = await createJobs(data)
+    if (result.acknowledged === true) {
+      console.log("asdfghjkl")
+      toast.add({
+        type: "success",
+        description: "create  new jobs ",
+      })
+    }
   }
 
   return (
