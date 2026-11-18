@@ -7,6 +7,8 @@ import { Menu, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { authClient, useSession } from "@/lib/auth-client"
+import { signOut } from "better-auth/api"
 
 const NAV_LINKS = [
   { label: "Browse Jobs", href: "#browse-jobs", active: true },
@@ -22,8 +24,14 @@ const NAV_LINKS = [
  * - Mobile: logo + hamburger; the dropdown panel mirrors the "HL/Menu"
  *   component (#1e1e21, r12, border #33333a, items with white/4-6% fills).
  */
+
 export function SiteHeader() {
   const [open, setOpen] = React.useState(false)
+  const { data: session } = useSession()
+  console.log("user ", session)
+  const handleSignOut = async () => {
+    await authClient.signOut()
+  }
 
   React.useEffect(() => {
     if (!open) return
@@ -78,12 +86,28 @@ export function SiteHeader() {
           <div aria-hidden="true" className="h-6 w-px bg-[#a8a8a8]/40" />
 
           <div className="flex items-center gap-4">
-            <Button className="h-9 rounded-[8px] bg-white px-4 text-[15px] font-semibold text-[#645bff] shadow-[0_2px_4px_rgba(0,0,0,0.25)] hover:bg-white/90 hover:text-[#645bff]">
-              <Link href="/sign-in">Sign In</Link>
-            </Button>
-            <Button className="h-9 rounded-[8px] px-4 text-[15px] shadow-[0_2px_4px_rgba(0,0,0,0.25)]">
-              Get Started
-            </Button>
+            {session?.user ? (
+              <>
+                <span>{session?.user?.name}</span>
+
+                <Button
+                  onClick={handleSignOut}
+                  className="h-9 rounded-[8px] px-4 text-[15px]"
+                >
+                  signOut
+                </Button>
+              </>
+            ) : (
+              <>
+                {" "}
+                <Button className="h-9 rounded-[8px] bg-white px-4 text-[15px] font-semibold text-[#645bff] shadow-[0_2px_4px_rgba(0,0,0,0.25)] hover:bg-white/90 hover:text-[#645bff]">
+                  <Link href="/sign-in">Sign In</Link>
+                </Button>
+                <Button className="h-9 rounded-[8px] px-4 text-[15px] shadow-[0_2px_4px_rgba(0,0,0,0.25)]">
+                  Get Started
+                </Button>
+              </>
+            )}
           </div>
         </nav>
 
