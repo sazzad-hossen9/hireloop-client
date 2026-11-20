@@ -1,44 +1,25 @@
-import {
-  Briefcase,
-  Code2,
-  MapPin,
-  Megaphone,
-  Package,
-  Palette,
-  Users,
-  type LucideIcon,
-} from "lucide-react"
+import { MapPin, Users } from "lucide-react"
 
 import { cn } from "cn"
+import {
+  JobCategoryIcon,
+  getCategoryStyle,
+} from "@/components/jobs/job-category-icon"
 import { formatDeadline, formatLocation, isExpired } from "@/lib/jobs/format"
 import type { JobPost } from "@/lib/jobs/types"
 
-/** Category accent + icon, mirroring the coloured icons used in the Figma table. */
-const CATEGORY_STYLES: Record<string, { icon: LucideIcon; className: string }> =
-  {
-    "Engineering & Tech": { icon: Code2, className: "text-[#38bdf8]" },
-    "Design & Creative": { icon: Palette, className: "text-[#f97316]" },
-    Product: { icon: Package, className: "text-[#c7d2fe]" },
-    Marketing: { icon: Megaphone, className: "text-[#c3c0ff]" },
-  }
-
-const FALLBACK_CATEGORY = { icon: Briefcase, className: "text-[#a0a0ab]" }
-
 /** Icon tile + job title + category label. */
 export function JobTitleCell({ job }: { job: JobPost }) {
-  const category = CATEGORY_STYLES[job.jobCategory] ?? FALLBACK_CATEGORY
-  const Icon = category.icon
+  const { className: accent } = getCategoryStyle(job.jobCategory)
 
   return (
     <div className="flex items-center gap-3">
-      <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-[#232327]">
-        <Icon className={cn("size-5", category.className)} />
-      </span>
+      <JobCategoryIcon category={job.jobCategory} />
       <div className="min-w-0">
         <p className="max-w-[190px] truncate text-sm font-semibold text-white">
           {job.jobTitle}
         </p>
-        <p className={cn("text-[11px] font-medium", category.className)}>
+        <p className={cn("text-[11px] font-medium", accent)}>
           {job.jobCategory}
         </p>
       </div>
