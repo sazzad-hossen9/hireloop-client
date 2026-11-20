@@ -23,7 +23,7 @@ export function SiteHeader() {
   const [open, setOpen] = React.useState(false)
   const { data: session } = useSession()
   const NAV_LINKS = [
-    { label: "Browse Jobs", href: "#browse-jobs", active: true },
+    { label: "Browse Jobs", href: "/browse-jobs", active: true },
     { label: "Company", href: "#company", active: false },
     { label: "Pricing", href: "#pricing", active: false },
     {

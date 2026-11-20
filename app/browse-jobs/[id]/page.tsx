@@ -24,6 +24,7 @@ import {
 } from "@/lib/jobs/format"
 import { JOB_TYPE_LABELS } from "@/lib/jobs/options"
 import { cn } from "cn"
+import ApplyNow from "./_components/ApplyNow"
 
 export const metadata: Metadata = {
   title: "Job Details — HireLoop",
@@ -202,18 +203,7 @@ export default async function JobDetailsPage({ params }: JobDetailsPageProps) {
                 <Bookmark className="size-[18px]" />
               </button>
 
-              <button
-                type="button"
-                disabled={expired}
-                className={cn(
-                  "inline-flex h-12 min-w-[115px] items-center justify-center rounded-[8px] px-4 text-[15px] font-medium transition-colors",
-                  expired
-                    ? "cursor-not-allowed bg-white/10 text-[#8e9192]"
-                    : "bg-[#fafafa] text-[#0b0b0c] hover:bg-white/90"
-                )}
-              >
-                {expired ? "Closed" : "Apply Now"}
-              </button>
+              <ApplyNow expired={expired} id={job._id} />
             </div>
           </div>
         </section>

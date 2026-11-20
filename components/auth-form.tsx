@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -37,6 +37,8 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
   const [pending, setPending] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
 
+  const searchParams = useSearchParams()
+  const redirectTo = searchParams.get("redirectTo")??"/"
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     const data = Object.fromEntries(new FormData(event.currentTarget))
@@ -49,7 +51,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
         const { error } = await authClient.signIn.email({
           email: data.email as string,
           password: data.password as string,
-          callbackURL: "/",
+          callbackURL: redirectTo,
         })
         if (error) {
           setError(error.message ?? "Unable to sign in. Please try again.")
@@ -65,7 +67,9 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
           callbackURL: "/",
         })
         if (error) {
-          setError(error.message ?? "Unable to create account. Please try again.")
+          setError(
+            error.message ?? "Unable to create account. Please try again."
+          )
           return
         }
         router.push("/")
