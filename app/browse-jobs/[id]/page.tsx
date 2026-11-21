@@ -203,7 +203,7 @@ export default async function JobDetailsPage({ params }: JobDetailsPageProps) {
                 <Bookmark className="size-[18px]" />
               </button>
 
-              <ApplyNow expired={expired} id={job._id} />
+              <ApplyNow expired={expired} job={job} />
             </div>
           </div>
         </section>
