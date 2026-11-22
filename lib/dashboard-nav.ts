@@ -64,7 +64,7 @@ export const menuItemByRole: Record<DashboardRole, DashboardNavItem[]> = {
     {
       id: "seeker-billing",
       name: "Billing",
-      url: "/dashboard/seeker/billing",
+      url: "/payment",
       icon: Wallet,
     },
     {

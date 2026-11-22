@@ -39,12 +39,17 @@ const ApplyNow = ({ expired, job }: { expired: boolean; job: JobPost }) => {
     const remote = job.isRemote === true || String(job.isRemote) === "yes"
 
     setPending(true)
-    const resultCount = await GetApplicationsCount(`applicantId=${user.id}`)
-    if (resultCount.count >= 10) {
-      //redirect to payment
-      router.push("/payment")
-    }
     try {
+      const resultCount = await GetApplicationsCount(`applicantId=${user.id}`)
+      if (resultCount.count >= 10) {
+        toast.add({
+          type: "info",
+          description:
+            "You’ve reached the free application limit. Please upgrade to continue.",
+        })
+        router.push("/payment")
+        return
+      }
       const result = await createApplication({
         jobId: job._id,
         applicantId: user.id,
