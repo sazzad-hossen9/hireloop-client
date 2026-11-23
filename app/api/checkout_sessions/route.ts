@@ -3,8 +3,10 @@ import { headers } from "next/headers"
 
 import { stripe } from "@/lib/stripe"
 import { PRO_PLAN } from "@/lib/payments/plans"
+import getSession from "@/lib/core/server"
 
 export async function POST() {
+  const userSession = await getSession()
   try {
     const headersList = await headers()
     const origin = headersList.get("origin")
@@ -26,6 +28,7 @@ export async function POST() {
         },
       ],
       mode: "payment",
+      customer_email: userSession?.user?.email,
       success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/payment`,
     })
