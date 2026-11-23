@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { Check, CreditCard, Lock, ShieldCheck } from "lucide-react"
 
-import { CheckoutButton } from "@/app/checkout/page"
+
 import { SiteHeader } from "@/components/site-header"
 import { PRO_PLAN, formatPlanPrice } from "@/lib/payments/plans"
 
@@ -9,9 +9,18 @@ export const metadata: Metadata = {
   title: "Payment — HireLoop",
 }
 
-export default function PaymentPage() {
+export default async function PaymentPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ plan?: string; canceled?: string }>
+}) {
   const price = formatPlanPrice(PRO_PLAN)
-
+  const { canceled } = await searchParams
+  if (canceled) {
+    console.log(
+      "Order canceled -- continue to shop around and check out when you're ready."
+    )
+  }
   return (
     <div className="min-h-svh bg-[#010103] text-[#ededef]">
       <SiteHeader />
@@ -130,8 +139,17 @@ export default function PaymentPage() {
               <p className="text-sm font-medium text-white">Total due today</p>
               <p className="text-xl font-semibold text-white">{price}</p>
             </div>
-
-            <CheckoutButton amountLabel={price} className="mt-6" />
+            <form action="/api/checkout_sessions" method="POST">
+              <section>
+                <button
+                  type="submit"
+                  role="link"
+                  className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-[10px] bg-primary px-4 text-sm font-medium text-white transition-colors hover:bg-primary/85 focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  Checkout ${PRO_PLAN.price}
+                </button>
+              </section>
+            </form>
 
             <div className="mt-4 flex items-center justify-center gap-2 text-[12px] leading-5 text-[#a0a0ab]">
               <ShieldCheck className="size-3.5 shrink-0" aria-hidden="true" />

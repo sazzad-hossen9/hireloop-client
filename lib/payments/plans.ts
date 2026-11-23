@@ -9,7 +9,7 @@ export const PRO_PLAN = {
   id: "pro-monthly",
   name: "HireLoop Pro",
   description: "Unlock unlimited applications and priority review.",
-  price: 19,
+  price: 20,
   interval: "month",
   features: [
     "Unlimited job applications",
