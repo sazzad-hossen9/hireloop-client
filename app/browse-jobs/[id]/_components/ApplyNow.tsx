@@ -9,6 +9,7 @@ import { useSession } from "@/lib/auth-client"
 import type { JobPost } from "@/lib/jobs/types"
 import { cn } from "cn"
 import GetApplicationsCount from "@/lib/api/applications"
+import { getUserPremiumById } from "@/lib/api/user"
 
 /**
  * Persists the application, then sends the seeker to My Applications.
@@ -37,11 +38,11 @@ const ApplyNow = ({ expired, job }: { expired: boolean; job: JobPost }) => {
     }
 
     const remote = job.isRemote === true || String(job.isRemote) === "yes"
-
+    const premiumResult = await getUserPremiumById(session?.user?.id)
     setPending(true)
     try {
       const resultCount = await GetApplicationsCount(`applicantId=${user.id}`)
-      if (resultCount.count >= 10) {
+      if (!premiumResult.premium && resultCount.count >= 2) {
         toast.add({
           type: "info",
           description:

@@ -14,6 +14,8 @@ export type JobPost = {
   _id: string
   jobTitle: string
   companyName: string
+  companyId?: string
+  recruiterId: string
   jobCategory: string
   jobType: JobType
   isRemote: boolean

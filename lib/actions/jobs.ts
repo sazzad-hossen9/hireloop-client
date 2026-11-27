@@ -2,6 +2,7 @@ const BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/"
 
 export const createJobs = async (data: Record<string, string>) => {
+  console.log("Sending job data:", data)
   const res = await fetch(`${BASE_URL}/jobs`, {
     method: "POST",
     headers: {

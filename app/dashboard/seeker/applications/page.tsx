@@ -11,6 +11,7 @@ import { DashboardPage } from "@/components/dashboard/page-container"
 import { getApplications } from "@/lib/api/applications"
 import { getApplicationStats } from "@/lib/applications/stats"
 import { auth } from "@/lib/auth"
+import { getUserPremiumById } from "@/lib/api/user"
 
 export const metadata: Metadata = {
   title: "My Applications — HireLoop",
@@ -151,14 +152,15 @@ export default async function MyApplicationsPage({
   }
 
   // Recruiters/admins have no seeker applications; send them to their own home.
-  if (session.user.role !== "seeker") {
+  if (session?.user?.role !== "seeker") {
     redirect(
       session.user.role === "admin"
         ? "/dashboard/admin"
         : "/dashboard/recruiter"
     )
   }
-
+  const premiumResult =await getUserPremiumById(session?.user?.id)
+  console.log("premiumResult", premiumResult)
   // Live rows from MongoDB, newest first. Archived filtering happens below so
   // the stats cards always reflect every application, not just the open tab.
   const applications = await getApplications({ applicantId: session.user.id })

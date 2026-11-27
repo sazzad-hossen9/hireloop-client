@@ -8,13 +8,15 @@ import { JobsCardList } from "@/components/jobs/jobs-card-list"
 import { JobsTable } from "@/components/jobs/jobs-table"
 import { Button } from "@/components/ui/button"
 import { getJobs } from "@/lib/api/jobs"
+import getSession from "@/lib/core/server"
 
 export const metadata: Metadata = {
   title: "Manage Job Posts — HireLoop",
 }
 
 export default async function ManageJobsPage() {
-  const jobs = await getJobs()
+  const session = await getSession()
+  const jobs = await getJobs(`recruiterId=${session?.user.id}`)
 
   return (
     <DashboardPage width="wide">

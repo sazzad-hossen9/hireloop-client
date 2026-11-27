@@ -29,6 +29,7 @@ export async function POST() {
       ],
       mode: "payment",
       customer_email: userSession?.user?.email,
+      metadata: { userId: userSession?.user?.id ?? "" },
       success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/payment`,
     })

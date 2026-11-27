@@ -20,25 +20,34 @@ import { toast } from "@/components/ui/toast"
 import { createJobs } from "@/lib/actions/jobs"
 import { FREQUENCIES, JOB_CATEGORIES, JOB_TYPES } from "@/lib/jobs/options"
 import { cn } from "cn"
+import { authClient } from "@/lib/auth-client"
 
 export function NewJobForm() {
   const [collected, setCollected] = React.useState<Record<
     string,
     string
   > | null>(null)
-
+  const { data: session } = authClient.useSession()
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
-
-    // One line to read every named input into a plain object.
+    // One line to read every named input into a plain object
+    if (!session?.user.id) {
+      toast.add({
+        type: "error",
+        description: "Please login first",
+      })
+      return
+    }
     const data = Object.fromEntries(
       new FormData(event.currentTarget)
     ) as Record<string, string>
+    const jobData = {
+      ...data,
+      recruiterId: session?.user.id ?? "",
+    }
 
-    // TODO: send `data` to your API / MongoDB when the backend is ready.
-    console.log("[new job] form data:", data)
-    setCollected(data)
-    const result = await createJobs(data)
+    setCollected(jobData)
+    const result = await createJobs(jobData)
     if (result.acknowledged === true) {
       toast.add({
         type: "success",

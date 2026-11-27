@@ -1,3 +1,5 @@
+// import { Session } from './../../node_modules/stripe/cjs/resources/BillingPortal/Sessions.d';
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000"
 export type CheckoutSession = {
   /** Stripe-hosted Checkout URL. `null` until Stripe is connected. */
   url: string | null
@@ -20,10 +22,24 @@ export type CheckoutSession = {
  *
  * The pay button already redirects to `url` once one is returned, so only this
  * function has to change when the backend is ready.
- */
-export async function createCheckoutSession(): Promise<CheckoutSession> {
-  return {
-    url: null,
-    message: "Stripe Checkout is coming soon.",
-  }
+//  */
+// export async function createCheckoutSession(): Promise<CheckoutSession> {
+//   return {
+//     url: null,
+//     message: "Stripe Checkout is coming soon.",
+//   }
+// }
+
+
+
+//checkout verify
+export const  checkoutVerify=async(sessionId:string)=>{
+  const res =await fetch(`${BASE_URL}/payment/checkout-verify`,{
+    method:"POST",
+    headers:{
+       "Content-Type": "application/json",
+    },
+    body:JSON.stringify({sessionId})
+    })
+    return res.json()
 }
