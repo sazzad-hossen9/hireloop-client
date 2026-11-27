@@ -10,7 +10,7 @@ export function StatusChip({ status }: { status: ApplicationStatus }) {
   return (
     <span
       className={cn(
-        "inline-flex h-[22px] items-center rounded-[4px] border px-2.5 text-[12px] leading-4 font-medium whitespace-nowrap",
+        "inline-flex h-[22px] shrink-0 items-center rounded-[4px] border px-2.5 text-[12px] leading-4 font-medium whitespace-nowrap",
         meta.badgeClassName
       )}
     >

@@ -49,3 +49,24 @@ export function formatRelativeTime(value: string, now = Date.now()) {
   const years = Math.floor(diff / YEAR)
   return `${years} year${years === 1 ? "" : "s"} ago`
 }
+
+const appliedDateFormatter = new Intl.DateTimeFormat("en-US", {
+  month: "short",
+  day: "2-digit",
+  year: "numeric",
+})
+
+/**
+ * `"2026-11-21T10:00:00.000Z"` → `"Nov 21, 2026"`.
+ *
+ * Recruiters scan absolute dates better than relative ones when comparing
+ * applicants, so the recruiter table uses this instead of `formatRelativeTime`.
+ * Invalid dates return an em dash.
+ */
+export function formatAppliedDate(value: string) {
+  const date = new Date(value)
+
+  if (Number.isNaN(date.getTime())) return "—"
+
+  return appliedDateFormatter.format(date)
+}

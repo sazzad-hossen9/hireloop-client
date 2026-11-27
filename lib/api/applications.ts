@@ -6,23 +6,28 @@ import type {
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000"
 
 export type ApplicationFilters = {
-  applicantId: string
+  /** Filter by seeker. */
+  applicantId?: string
+  /** Filter by job, used by recruiters viewing applicants for a posting. */
+  jobId?: string
   status?: ApplicationStatus | ApplicationStatus[]
   archived?: boolean
   search?: string
 }
 
 /**
- * Applications for one seeker, newest first.
+ * Applications matching the given filters, newest first.
  *
- * Used by `/dashboard/seeker/applications`; the page fetches every row for the
- * signed-in seeker and splits Active/Archived locally so the stat cards keep
- * counting both tabs.
+ * Pass `applicantId` for a seeker's own applications, or `jobId` for a
+ * recruiter's view of applicants to a specific job.
  */
 export async function getApplications(
   filters: ApplicationFilters
 ): Promise<JobApplication[]> {
-  const params = new URLSearchParams({ applicantId: filters.applicantId })
+  const params = new URLSearchParams()
+
+  if (filters.applicantId) params.set("applicantId", filters.applicantId)
+  if (filters.jobId) params.set("jobId", filters.jobId)
 
   if (filters.status) {
     const statuses = Array.isArray(filters.status)
@@ -48,14 +53,11 @@ export async function getApplications(
   return res.json()
 }
 
-
-
-
-const GetApplicationsCount =async (query=""): Promise<{count:number}>=> {
- const res = await fetch(`${BASE_URL}/applications/count?${query}`, {
+const GetApplicationsCount = async (query = ""): Promise<{ count: number }> => {
+  const res = await fetch(`${BASE_URL}/applications/count?${query}`, {
     cache: "no-store",
   })
   return res.json()
-};
+}
 
-export default GetApplicationsCount;
+export default GetApplicationsCount

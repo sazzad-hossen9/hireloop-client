@@ -34,6 +34,8 @@ export type JobApplication = {
   jobType: JobType
   workSetup: WorkSetup
   location: string
+  /** Optional experience snapshot ("6 years") shown to recruiters. */
+  experience?: string
   status: ApplicationStatus
   /** ISO timestamp of when the application was submitted. */
   appliedAt: string

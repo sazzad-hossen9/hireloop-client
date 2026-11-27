@@ -76,7 +76,11 @@ export function JobsTable({ jobs }: { jobs: JobPost[] }) {
                   {formatCompensation(job)}
                 </td>
                 <td className={cn("py-4", cellPadding(4))}>
-                  <Applicants count={job.applicants} withLabel />
+                  <Applicants
+                    count={job.applicants}
+                    withLabel
+                    href={`/dashboard/recruiter/jobs/${job._id}/applications`}
+                  />
                 </td>
                 <td className={cn("py-4", cellPadding(5))}>
                   <StatusPill expired={expired} />

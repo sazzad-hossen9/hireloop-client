@@ -32,7 +32,10 @@ export function JobsCardList({ jobs }: { jobs: JobPost[] }) {
               <span className="text-[13px] font-medium text-white">
                 {formatCompensation(job)}
               </span>
-              <Applicants count={job.applicants} />
+              <Applicants
+                count={job.applicants}
+                href={`/dashboard/recruiter/jobs/${job._id}/applications`}
+              />
             </div>
 
             <div className="flex items-center justify-between gap-3">

@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { MapPin, Users } from "lucide-react"
 
 import { cn } from "cn"
@@ -46,17 +47,35 @@ export function CompanyLocation({ job }: { job: JobPost }) {
 export function Applicants({
   count,
   withLabel = false,
+  href,
 }: {
   count: number
   withLabel?: boolean
+  href?: string
 }) {
-  return (
-    <span className="flex items-center gap-1 text-[13px] font-semibold whitespace-nowrap text-[#c3c0ff]">
-      <Users className="size-4" />
+  const content = (
+    <>
+      <Users className="size-4" aria-hidden="true" />
       {count}
       {withLabel && " Candidates"}
-    </span>
+    </>
   )
+
+  const className =
+    "flex items-center gap-1 text-[13px] font-semibold whitespace-nowrap text-[#c3c0ff]"
+
+  if (href) {
+    return (
+      <Link
+        href={href}
+        className={cn(className, "transition-colors hover:text-white")}
+      >
+        {content}
+      </Link>
+    )
+  }
+
+  return <span className={className}>{content}</span>
 }
 
 /** Formatted deadline + "Closed" (expired) or the posted label. */
