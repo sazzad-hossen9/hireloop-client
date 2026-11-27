@@ -8,6 +8,7 @@ import { cn } from "cn"
 import { ApplicationsTable } from "@/components/applications/applications-table"
 import { ExportPdfButton } from "@/components/applications/export-pdf-button"
 import { DashboardPage } from "@/components/dashboard/page-container"
+import { StatCard } from "@/components/dashboard/stat-card"
 import { getApplications } from "@/lib/api/applications"
 import { getApplicationStats } from "@/lib/applications/stats"
 import { auth } from "@/lib/auth"
@@ -30,33 +31,6 @@ type MyApplicationsPageProps = {
 
 function firstValue(value: string | string[] | undefined) {
   return Array.isArray(value) ? value[0] : value
-}
-
-/** One of the four 86px stats cards above the table. */
-function StatCard({
-  label,
-  value,
-  valueClassName,
-}: {
-  label: string
-  value: number | string
-  valueClassName?: string
-}) {
-  return (
-    <div className="flex h-[86px] flex-col justify-center gap-2 rounded-[12px] border border-white/[0.07] bg-[#141418] px-6 shadow-[0_1px_2px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.04)]">
-      <p className="text-[13px] leading-5 tracking-[-0.005em] text-[#a0a0ab]">
-        {label}
-      </p>
-      <p
-        className={cn(
-          "text-[26px] leading-8 font-semibold tracking-[-0.02em] text-[#ededef]",
-          valueClassName
-        )}
-      >
-        {value}
-      </p>
-    </div>
-  )
 }
 
 function PageArrow({
